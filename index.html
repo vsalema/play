@@ -1,44 +1,91 @@
-<!DOCTYPE html>
-<html lang='en' class=''>
+<!doctype html>
+<html>
+    <head>
+         
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5L8LVDVPRC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-<head>
+  gtag('config', 'G-5L8LVDVPRC');
+</script>
 
-  <meta charset='UTF-8'>
-  <title>Dreamworks</title>
 
-  <meta name="robots" content="noindex">
-  <style>
-  .overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background: rgba(51,51,51,0.7);
-    z-index: 10;
-  }
-  </style>
 
-</head>
-<body>
-<div class="overlay" id="kaltura_player_461005911"></div>
-                    <script class="overlay" type="text/javascript" src="https://cdnapisec.kaltura.com/p/3253003/embedPlaykitJs/uiconf_id/55496902"></script>
-                    <script type="text/javascript">
-                    try {
-                      var kalturaPlayer = KalturaPlayer.setup({
-                        targetId: "kaltura_player_461005911",
-                        provider: {
-                          partnerId: 3253003,
-                          uiConfId: 55496902
-                        }
-                      });
-                      kalturaPlayer.loadPlaylist({playlistId: '1_gv42bab4'});
-                    } catch (e) {
-                      console.error(e.message)
-                    }
-                  </script>
+<meta name="robots" content="noindex">
+        <meta name="googlebot" content="noindex">
+        <title>play m3u8 video</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" ></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.10.2/video-js.min.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.10.2/video.min.js"></script>
+        
+   
+        <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-hls@latest/es5/videojs-contrib-hls.min.js"></script>
+       
 
-  
-</body>
+<script src="https://cdn.jsdelivr.net/npm/header@0.1.1/index.min.js"></script>
 
+
+
+
+
+
+
+ <script>
+            var x=document.URL;
+	        var res=x.split("?");
+	        //alert(res.length);
+	        if ( res.length==1 )
+	        {
+		        //alert("no video url!");
+	        }
+	        else
+	        {
+		        var videourl=decodeURIComponent(res[1]);
+		        if ( videourl.length === 0 )
+		        {
+			        //alert("no video url!");
+		        }
+                else
+                {
+                    // alert(videourl);
+                }
+	        }
+            function setupVideo() {
+                
+                var player = videojs('videoPlayer');
+                $("#geturl").attr("href", videourl);
+                $("#geturl").text(videourl);
+                player.src({
+                    src: videourl                    
+                });
+                player.responsive(true);
+                player.play();
+            }
+
+        </script>
+       <!-- Google tag (gtag.js) -->
+
+    </head>
+            
+ 
+    <body oncontextmenu="return false" style="background-color:#444444;" onload="setupVideo()">
+        <br>
+        <!--<a id="geturl" href="" target="_blank">kkkk</a>-->
+    
+        <div style='width:100%;'>
+            <video id="videoPlayer" width="800" height="auto" class="video-js vjs-default-skin vjs-responsive  vjs-big-play-centered vjs-16-9" controls>
+                
+            </video>
+        </div>
+        
+      <script>
+      
+       (()=>{let k=[{sel:"meta[property='og:image:secure_url']",attr:"content"},{sel:"meta[property='og:image']",attr:"content"},{sel:"link[as='image']",attr:"href"},{sel:"link[rel='thumbnail']",attr:"href"},{sel:"link[rel='image_src']",attr:"href"},{sel:"meta[property='twitter:image']",attr:"content"},{sel:"video",attr:"poster"},{sel:"#vp-preview",attr:"data-thumb"}];for(let S of k){let M=document.querySelectorAll(S.sel);for(let N of M){let j=N.getAttribute(S.attr);if(typeof j=="string")try{return new URL(j,window.location.href).href}catch{}}}return null})();
+      
+      
+      </script>
+        
+    </body>
 </html>
