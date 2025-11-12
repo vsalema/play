@@ -1,92 +1,83 @@
-<!doctype html>
-<html>
-    <head>
-         
-<script async src="https://www.googletagmanager.com/gtag/js?id=GTM-WND5TJ "></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="robots" content="noindex,nofollow,max-snippet:0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  gtag('config', 'GTM-WND5TJ ');
-</script>
+  <!-- Video.js minimal -->
+  <link href="https://unpkg.com/video.js@7/dist/video-js.css" rel="stylesheet" />
+  <script src="https://unpkg.com/video.js@7/dist/video.min.js"></script>
 
+  <style>
+    html, body { height: 100%; margin: 0; background: #000; overflow: hidden; }
+    /* occupe 100% de l'iframe/overlay */
+    #player { width: 100%; height: 100%; }
+    /* neutralise le ratio par défaut pour un vrai fill */
+    .vjs-fluid { padding-top: 0 !important; }
+  </style>
+</head>
+<body>
+  <video id="player"
+         class="video-js vjs-fill vjs-big-play-centered"
+         controls
+         playsinline
+         autoplay
+         preload="auto"></video>
 
+  <script>
+  (function () {
+    // Accepte 2 modes d'appel :
+    // 1) ?https://domaine/flux.m3u8 (vous passez directement l'URL après '?')
+    // 2) ?src=https://domaine/media (ou ?url= / ?u=)
+    var q = window.location.search;
+    var src = '';
 
-<meta name="robots" content="noindex">
-        <meta name="googlebot" content="noindex">
-        <meta name="referrer" content="no-referrer">
-	    <title>play m3u8 video</title>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" ></script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.10.2/video-js.min.css" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.10.2/video.min.js"></script>
-        
-   <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-hls@latest/es5/videojs-contrib-hls.min.js"></script>
-        
-       
+    if (q && q.length > 1) {
+      var raw = decodeURIComponent(q.substring(1));
+      if (/^https?:/i.test(raw)) {
+        // Cas 1: l'URL complète est passée après '?'
+        src = raw;
+      } else {
+        // Cas 2: paramètres nommés
+        var params = new URLSearchParams(q);
+        src = params.get('src') || params.get('url') || params.get('u') || '';
+      }
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/header@0.1.1/index.min.js"></script>
+    var player = videojs('player', {
+      fluid: true,
+      preload: 'auto',
+      inactivityTimeout: 0
+    });
 
+    function setSource(url) {
+      if (!url) return;
+      // Détection simple du mime-type
+      var type = '';
+      if (/\.m3u8(\?.*)?$/i.test(url)) type = 'application/x-mpegURL';
+      else if (/\.mpd(\?.*)?$/i.test(url)) type = 'application/dash+xml';
+      else if (/\.mp3(\?.*)?$/i.test(url)) type = 'audio/mpeg';
+      else if (/\.mp4(\?.*)?$/i.test(url)) type = 'video/mp4';
 
+      player.src(type ? { src: url, type: type } : { src: url });
+    }
 
+    setSource(src);
 
-
-
-
- <script>
-            var x=document.URL;
-	        var res=x.split("?");
-	        //alert(res.length);
-	        if ( res.length==1 )
-	        {
-		        //alert("no video url!");
-	        }
-	        else
-	        {
-		        var videourl=decodeURIComponent(res[1]);
-		        if ( videourl.length === 0 )
-		        {
-			        //alert("no video url!");
-		        }
-                else
-                {
-                    // alert(videourl);
-                }
-	        }
-            function setupVideo() {
-                
-                var player = videojs('videoPlayer');
-                $("#geturl").attr("href", videourl);
-                $("#geturl").text(videourl);
-                player.src({
-                    src: videourl                    
-                });
-                player.responsive(true);
-                player.play();
-            }
-
-        </script>
-       <!-- Google tag (gtag.js) -->
-
-    </head>
-            
- 
-    <body oncontextmenu="return false" style="margin-left: 0px;margin-top: -19px;width:100%;height:auto;" onload="setupVideo()">
-        <br>
-        <!--<a id="geturl" href="" target="_blank">kkkk</a>-->
-    
-        <div style='width:100%;'>
-            <video id="videoPlayer" width="860" height="auto" autoplay class="video-js vjs-default-skin vjs-responsive  vjs-big-play-centered vjs-16-9" controls>
-                
-            </video>
-        </div>
-        
-      <script>
-      
-       (()=>{let k=[{sel:"meta[property='og:image:secure_url']",attr:"content"},{sel:"meta[property='og:image']",attr:"content"},{sel:"link[as='image']",attr:"href"},{sel:"link[rel='thumbnail']",attr:"href"},{sel:"link[rel='image_src']",attr:"href"},{sel:"meta[property='twitter:image']",attr:"content"},{sel:"video",attr:"poster"},{sel:"#vp-preview",attr:"data-thumb"}];for(let S of k){let M=document.querySelectorAll(S.sel);for(let N of M){let j=N.getAttribute(S.attr);if(typeof j=="string")try{return new URL(j,window.location.href).href}catch{}}}return null})();
-      
-      
-      </script>
-        
-    </body>
+    // Mise à jour à chaud via postMessage depuis la page parente
+    // parent.postMessage({ type: 'SET_SRC', url: 'https://…/nouveau.m3u8' }, '*')
+    // ou parent.postMessage('https://…/nouveau.m3u8', '*')
+    window.addEventListener('message', function (e) {
+      if (!e.data) return;
+      if (typeof e.data === 'string' && /^https?:/i.test(e.data)) {
+        setSource(e.data);
+      } else if (e.data && e.data.type === 'SET_SRC' && e.data.url) {
+        setSource(e.data.url);
+      }
+    });
+  })();
+  </script>
+</body>
 </html>
